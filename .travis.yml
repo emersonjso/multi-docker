@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t emersonjso/react-test -f ./client/Dockerfile.dev ./client
+
+script: 
+  - docker run -e CI=true emersonjso/react-test npm test
+
+after_sucess:
+  - docker build -t emersonjso/multi-client ./client
+  - docker build -t emersonjso/multi-nginx ./nginx
+  - docker build -t emersonjso/multi-server ./server
+  - docker build -t emersonjso/multi-worker ./worker
+# log in to the docker cli
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+# take those images and push them to docker hub
+  - docker push emersonjso/multi-client
+  - docker push emersonjso/multi-nginx
+  - docker push emersonjso/multi-server
+  - docker push emersonjso/multi-worker
