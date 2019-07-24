@@ -8,7 +8,7 @@ before_install:
 script: 
   - docker run -e CI=true emersonjso/react-test npm test
 
-after_sucess:
+after_success:
   - docker build -t emersonjso/multi-client ./client
   - docker build -t emersonjso/multi-nginx ./nginx
   - docker build -t emersonjso/multi-server ./server
